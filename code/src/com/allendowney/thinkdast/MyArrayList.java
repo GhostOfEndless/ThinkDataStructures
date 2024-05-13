@@ -1,10 +1,6 @@
 package com.allendowney.thinkdast;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 /**
  * @author downey
@@ -38,14 +34,21 @@ public class MyArrayList<T> implements List<T> {
 		mal.add(3);
 		System.out.println(Arrays.toString(mal.toArray()) + " size = " + mal.size);
 
-		mal.remove(new Integer(2));
+		mal.remove(2);
 		System.out.println(Arrays.toString(mal.toArray()) + " size = " + mal.size);
 	}
 
 	@Override
 	public boolean add(T element) {
 		// TODO: FILL THIS IN!
-		return false;
+		if (size >= array.length) {
+			T[] newArray = (T[]) new Object[array.length + 10];
+			System.arraycopy(array, 0,newArray, 0, array.length);
+			array = newArray;
+		}
+		array[size] = element;
+		size++;
+		return true;
 	}
 
 	@Override
@@ -111,16 +114,16 @@ public class MyArrayList<T> implements List<T> {
 	@Override
 	public int indexOf(Object target) {
 		// TODO: FILL THIS IN!
-		return -1;
+		int index = -1;
+		for (int i = 0; i < size; i++) {
+			if (Objects.equals(array[i], target)) {
+				index = i;
+				break;
+			}
+		}
+		return index;
 	}
 
-	/** Checks whether an element of the array is the target.
-	 *
-	 * Handles the special case that the target is null.
-	 *
-	 * @param target
-	 * @param object
-	 */
 	private boolean equals(Object target, Object element) {
 		if (target == null) {
 			return element == null;
@@ -182,7 +185,13 @@ public class MyArrayList<T> implements List<T> {
 	@Override
 	public T remove(int index) {
 		// TODO: FILL THIS IN!
-		return null;
+		T element = array[index];
+		for (int i = index; i < size - 1; i++) {
+			array[i] = array[i + 1];
+		}
+		array[size - 1] = null;
+		size--;
+		return element;
 	}
 
 	@Override
@@ -202,7 +211,12 @@ public class MyArrayList<T> implements List<T> {
 	@Override
 	public T set(int index, T element) {
 		// TODO: FILL THIS IN!
-		return null;
+		if (index < 0 || index >= size) {
+			throw new IndexOutOfBoundsException();
+		}
+		T prev = array[index];
+		array[index] = element;
+		return prev;
 	}
 
 	@Override
